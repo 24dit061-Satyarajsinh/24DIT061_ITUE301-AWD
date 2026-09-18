@@ -5,14 +5,16 @@ function TaskForm({ onCreate, creating }) {
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('medium');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim()) return;
 
-    onCreate({ title, description, priority });
-    setTitle('');
-    setDescription('');
-    setPriority('medium');
+    const created = await onCreate({ title, description, priority });
+    if (created) {
+      setTitle('');
+      setDescription('');
+      setPriority('medium');
+    }
   };
 
   return (

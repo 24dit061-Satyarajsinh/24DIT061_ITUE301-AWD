@@ -1,4 +1,4 @@
-function ConfirmDialog({ open, title, message, onConfirm, onCancel }) {
+function ConfirmDialog({ open, title, message, onConfirm, onCancel, busy }) {
   if (!open) return null;
 
   return (
@@ -7,11 +7,11 @@ function ConfirmDialog({ open, title, message, onConfirm, onCancel }) {
         <h3>{title}</h3>
         <p>{message}</p>
         <div className="modal-actions">
-          <button className="btn btn-secondary" onClick={onCancel}>
+          <button className="btn btn-secondary" disabled={busy} onClick={onCancel}>
             Cancel
           </button>
-          <button className="btn btn-danger" onClick={onConfirm}>
-            Delete
+          <button className="btn btn-danger" disabled={busy} onClick={onConfirm}>
+            {busy ? 'Deleting...' : 'Delete'}
           </button>
         </div>
       </div>

@@ -60,10 +60,12 @@ function App() {
       // Replace the optimistic placeholder with the real, server-confirmed task
       setTasks((prev) => prev.map((t) => (t._id === tempId ? savedTask : t)));
       pushToast('success', 'Task created');
+      return true;
     } catch (err) {
       // Roll back the optimistic update on failure
       setTasks((prev) => prev.filter((t) => t._id !== tempId));
       pushToast('error', `Failed to create task: ${err.message}`);
+      return false;
     } finally {
       setCreating(false);
     }
@@ -90,7 +92,6 @@ function App() {
   const confirmDelete = async () => {
     const task = confirmTarget;
     if (!task) return;
-    setConfirmTarget(null);
     setBusyTaskId(task._id);
     try {
       await deleteTask(task._id);
@@ -100,6 +101,7 @@ function App() {
       pushToast('error', `Failed to delete task: ${err.message}`);
     } finally {
       setBusyTaskId(null);
+      setConfirmTarget(null);
     }
   };
 
@@ -130,6 +132,7 @@ function App() {
         message={confirmTarget ? `Are you sure you want to delete "${confirmTarget.title}"? This cannot be undone.` : ''}
         onConfirm={confirmDelete}
         onCancel={cancelDelete}
+        busy={!!confirmTarget && busyTaskId === confirmTarget._id}
       />
 
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
